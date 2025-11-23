@@ -1,0 +1,107 @@
+# .dockerignore
+
+notebook/
+
+# Git files
+.git
+.gitignore
+.gitmodules
+.gitattributes
+.gitkeep
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+logs/
+*.tmp
+*.bak
+*.swp
+
+# Build/output directories
+dist/
+build/
+target/
+out/
+bin/
+obj/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Testing and coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/
+.coverage/
+
+# Others
+*.md.bak
+*.bak
+*.orig
+*.rej
