@@ -47,3 +47,18 @@ def get_tpose_mesh_final(estimator, outputs):
         joints_np = None
     return mesh, joints_np
 
+def pipe(model, file, height):
+    img_bgr = cv2.imread(file)
+    outputs = model.process_one_image(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB))
+
+    try:
+        # 1. Run the generator
+        tpose_mesh, tpose_joints = get_tpose_mesh_final(estimator, outputs)
+        print(f"\nSUCCESS: Generated T-Pose Mesh.")
+        print(f"Vertices: {len(tpose_mesh.vertices)}")
+        print(f"Joints: {len(tpose_joints) if tpose_joints is not None else 0}")
+
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # analyze_and_visualize_3d(tpose_mesh, tpose_joints, target_height_cm=height)
