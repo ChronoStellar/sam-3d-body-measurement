@@ -21,13 +21,6 @@ MEASUREMENT_CONFIG = {
         "offset": 0.0,
         "color": "green"
     },
-    "Hips": {
-        "type": "circumference",
-        "landmarks": ["pelvis"],
-        "func": np.mean,
-        "offset": 0.0,
-        "color": "purple"
-    },
     
     # --- NEW: POLYLINE (Curved Measurements) ---
     "Spinal Length": {

@@ -2,7 +2,7 @@ import cv2
 import torch
 import trimesh
 import numpy as np
-import plotly.graph_objects as go
+# import plotly.graph_objects as go
 from joints_definitions import MHR_JOINT_MAP, MEASUREMENT_CONFIG
 
 def get_tpose_mesh_final(estimator, outputs):
@@ -120,66 +120,67 @@ def calculate_body_metrics(mesh, joints, idx_map, config):
 
     return results
 
-def create_visualization(mesh, joints, measurements, idx_map, title="Body Analysis"):
-    traces = []
+# def create_visualization(mesh, joints, measurements, idx_map, title="Body Analysis"):
+#     traces = []
 
-    # Mesh
-    x, y, z = mesh.vertices.T
-    i, j, k = mesh.faces.T
-    traces.append(go.Mesh3d(x=x, y=y, z=z, i=i, j=j, k=k, color='lightgray', opacity=0.3, name='Skin'))
+#     # Mesh
+#     x, y, z = mesh.vertices.T
+#     i, j, k = mesh.faces.T
+#     traces.append(go.Mesh3d(x=x, y=y, z=z, i=i, j=j, k=k, color='lightgray', opacity=0.3, name='Skin'))
 
-    for name, data in measurements.items():
-        color = data['color']
-        val = data['value']
+#     for name, data in measurements.items():
+#         color = data['color']
+#         val = data['value']
 
-        if data['type'] == 'circ' and data['path'] is not None:
-            traces.append(go.Scatter3d(
-                x=data['path'][:, 0], y=data['path'][:, 1], z=data['path'][:, 2],
-                mode='lines', line=dict(color=color, width=5), name=f"{name}"
-            ))
+#         if data['type'] == 'circ' and data['path'] is not None:
+#             traces.append(go.Scatter3d(
+#                 x=data['path'][:, 0], y=data['path'][:, 1], z=data['path'][:, 2],
+#                 mode='lines', line=dict(color=color, width=5), name=f"{name}"
+#             ))
         
-        # Unified visualization for Polyline and Linear
-        elif data['type'] == 'polyline':
-            pts = data['points']
-            # Draw the connected line
-            traces.append(go.Scatter3d(
-                x=pts[:, 0], y=pts[:, 1], z=pts[:, 2],
-                mode='lines+markers', line=dict(color=color, width=5), 
-                marker=dict(size=4), name=f"{name}"
-            ))
+#         # Unified visualization for Polyline and Linear
+#         elif data['type'] == 'polyline':
+#             pts = data['points']
+#             # Draw the connected line
+#             traces.append(go.Scatter3d(
+#                 x=pts[:, 0], y=pts[:, 1], z=pts[:, 2],
+#                 mode='lines+markers', line=dict(color=color, width=5), 
+#                 marker=dict(size=4), name=f"{name}"
+#             ))
             
-            # Floating Text Label (at the middle point of the chain)
-            mid_idx = len(pts) // 2
-            mid_pt = pts[mid_idx]
+#             # Floating Text Label (at the middle point of the chain)
+#             mid_idx = len(pts) // 2
+#             mid_pt = pts[mid_idx]
             
-            # If it's a 2-point line, find exact geometric center
-            if len(pts) == 2:
-                mid_pt = np.mean(pts, axis=0)
+#             # If it's a 2-point line, find exact geometric center
+#             if len(pts) == 2:
+#                 mid_pt = np.mean(pts, axis=0)
 
-            traces.append(go.Scatter3d(
-                x=[mid_pt[0] + 5], y=[mid_pt[1]], z=[mid_pt[2] + 2],
-                mode='text', text=[f"{val:.1f}cm"],
-                textfont=dict(color=color, size=12, family="Arial Black"),
-                showlegend=False
-            ))
+#             traces.append(go.Scatter3d(
+#                 x=[mid_pt[0] + 5], y=[mid_pt[1]], z=[mid_pt[2] + 2],
+#                 mode='text', text=[f"{val:.1f}cm"],
+#                 textfont=dict(color=color, size=12, family="Arial Black"),
+#                 showlegend=False
+#             ))
 
-    # Joints
-    rel_indices = [idx_map[k] for k in idx_map]
-    rel_joints = joints[rel_indices]
-    traces.append(go.Scatter3d(
-        x=rel_joints[:, 0], y=rel_joints[:, 1], z=rel_joints[:, 2],
-        mode='markers', marker=dict(size=4, color='red'), name='Joints'
-    ))
+#     # Joints
+#     rel_indices = [idx_map[k] for k in idx_map]
+#     rel_joints = joints[rel_indices]
+#     traces.append(go.Scatter3d(
+#         x=rel_joints[:, 0], y=rel_joints[:, 1], z=rel_joints[:, 2],
+#         mode='markers', marker=dict(size=4, color='red'), name='Joints'
+#     ))
 
-    fig = go.Figure(data=traces)
-    fig.update_layout(
-        title=title, 
-        scene=dict(aspectmode='data', xaxis_visible=False, yaxis_visible=False, zaxis_visible=False),
-        margin=dict(t=40, b=0, l=0, r=0)
-    )
-    return fig
+#     fig = go.Figure(data=traces)
+#     fig.update_layout(
+#         title=title, 
+#         scene=dict(aspectmode='data', xaxis_visible=False, yaxis_visible=False, zaxis_visible=False),
+#         margin=dict(t=40, b=0, l=0, r=0)
+#     )
+#     return fig
 
 def get_measurements(mesh_orig, joints_orig, target_height_cm, visualize=False):
+    results = {}
     print(f"--- ANALYZING (Target: {target_height_cm}cm) ---")
     mesh = mesh_orig.copy()
     joints = joints_orig.copy()
@@ -189,9 +190,10 @@ def get_measurements(mesh_orig, joints_orig, target_height_cm, visualize=False):
     print("\n--- RESULTS ---")
     for k, v in measures.items():
         print(f"{k:<15}: {v['value']:.2f} cm")
+        results[k] = v['value']
 
     if visualize:
         fig = create_visualization(mesh, joints, measures, MHR_JOINT_MAP, title=f"Curved Analysis")
         fig.show()
     
-    return measures
+    return results

@@ -1,6 +1,7 @@
 # .dockerignore
 
 notebook/
+test_handler.py
 
 # Git files
 .git
@@ -105,3 +106,8 @@ coverage.xml
 *.bak
 *.orig
 *.rej
+
+# images
+*.jpg
+*.jpeg
+*.png

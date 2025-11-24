@@ -41,15 +41,6 @@ COPY requirements.txt .
 RUN sed -i '/appnope/d' requirements.txt && \
     pip install --no-cache-dir -r requirements.txt
 
-# 3. Install Heavy Git Libraries (Detectron2, MoGe)
-# Detectron2 requires the nvcc compiler present in this stage
-RUN pip install --no-cache-dir \
-    "git+https://github.com/facebookresearch/detectron2.git@a1ce2f9" \
-    --no-build-isolation
-
-RUN pip install --no-cache-dir "git+https://github.com/microsoft/MoGe.git"
-
-
 # ==========================================
 # Stage 2: Runtime (Slimmer final image)
 # ==========================================
