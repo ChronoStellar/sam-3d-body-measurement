@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Builder (Compiles specific libs)
 # ==========================================
-FROM nvidia/cuda:12.1.1-devel-ubuntu22.04 AS builder
+FROM nvidia/cuda:12.8.1-devel-ubuntu22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -31,9 +31,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
 # 1. Install PyTorch (GPU) first
-# We use the specific index URL to ensure we get the CUDA version, not CPU
+# cu128 wheels ship compiled kernels for Blackwell (RTX 50-series sm_120, B200 sm_100)
+# as well as older archs (Ampere/Ada/Hopper). Versions are pinned so the build can't drift.
 RUN pip install --no-cache-dir \
-    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 \
+    --index-url https://download.pytorch.org/whl/cu128
 
 # 2. Install Requirements
 COPY requirements.txt .
@@ -44,7 +46,7 @@ RUN sed -i '/appnope/d' requirements.txt && \
 # ==========================================
 # Stage 2: Runtime (Slimmer final image)
 # ==========================================
-FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+FROM nvidia/cuda:12.8.1-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE=1
